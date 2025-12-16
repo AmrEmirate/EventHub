@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,76 +17,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Loader2, Upload, ArrowLeft, Eye } from "lucide-react";
-import {
-  getMyTransactions,
-  uploadPaymentProof,
-  Transaction,
-} from "@/lib/apihelper";
+import { Loader2, Upload, ArrowLeft, Eye, X } from "lucide-react";
 import { formatPrice, formatDate } from "@/lib/utils";
 import { TransactionStatusBadge } from "@/components/ui/transaction-status-badge";
-import { toast } from "sonner";
 import CountdownTimer from "@/components/ui/countdown-timer";
 import PaymentInstructions from "../components/payment-instructions";
+import { useTransactions } from "@/hooks/use-transactions";
 
 export default function TransactionsPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [uploadingId, setUploadingId] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedTransactionId, setSelectedTransactionId] = useState<
-    string | null
-  >(null);
-
-  const fetchTransactions = async () => {
-    try {
-      const res = await getMyTransactions();
-      setTransactions(res.data);
-    } catch (error) {
-      toast.error("Tidak dapat memuat riwayat transaksi.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    fetchTransactions();
-  }, []);
-
-  const handleUploadClick = (transactionId: string) => {
-    setSelectedTransactionId(transactionId);
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (!event.target.files?.length || !selectedTransactionId) return;
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append("paymentProof", file);
-    setUploadingId(selectedTransactionId);
-    try {
-      await uploadPaymentProof(selectedTransactionId, formData);
-      toast.success("Bukti pembayaran berhasil diunggah.");
-      fetchTransactions();
-    } catch (error) {
-      toast.error("Gagal mengunggah bukti pembayaran.");
-    } finally {
-      setUploadingId(null);
-      setSelectedTransactionId(null);
-      if (event.target) event.target.value = "";
-    }
-  };
-
-  const pendingPaymentTransaction = transactions.find(
-    (trx) => trx.status === "PENDING_PAYMENT" && trx.finalPrice > 0
-  );
+  const {
+    transactions,
+    loading,
+    uploadingId,
+    cancellingId,
+    fileInputRef,
+    pendingPaymentTransaction,
+    handleUploadClick,
+    handleFileChange,
+    handleCancelTransaction,
+  } = useTransactions();
 
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* [PERBAIKAN] Tambahkan aria-label di sini */}
       <input
         type="file"
         ref={fileInputRef}
@@ -162,18 +113,39 @@ export default function TransactionsPage() {
                             </Button>
                           ) : trx.status === "PENDING_PAYMENT" &&
                             trx.finalPrice > 0 ? (
-                            <Button
-                              size="sm"
-                              onClick={() => handleUploadClick(trx.id)}
-                              disabled={uploadingId === trx.id}
-                            >
-                              {uploadingId === trx.id ? (
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                              ) : (
-                                <Upload className="h-4 w-4 mr-2" />
-                              )}
-                              Upload Bukti
-                            </Button>
+                            <div className="flex gap-2 justify-center">
+                              <Button
+                                size="sm"
+                                onClick={() => handleUploadClick(trx.id)}
+                                disabled={
+                                  uploadingId === trx.id ||
+                                  cancellingId === trx.id
+                                }
+                              >
+                                {uploadingId === trx.id ? (
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                  <Upload className="h-4 w-4 mr-2" />
+                                )}
+                                Upload
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleCancelTransaction(trx.id)}
+                                disabled={
+                                  uploadingId === trx.id ||
+                                  cancellingId === trx.id
+                                }
+                              >
+                                {cancellingId === trx.id ? (
+                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                ) : (
+                                  <X className="h-4 w-4 mr-2" />
+                                )}
+                                Batal
+                              </Button>
+                            </div>
                           ) : null}
                         </TableCell>
                       </TableRow>

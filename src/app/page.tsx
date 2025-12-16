@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Search, Calendar, MapPin } from "lucide-react";
+import { Search, Calendar, MapPin, Loader2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,12 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDebounce } from "@/hooks/use-debounce";
-import { getEvents, Event } from "@/lib/apihelper";
-import { formatDate } from "@/lib/utils";
-import Image from "next/image";
-import { Loader2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Event } from "@/lib/apihelper";
+import { formatDate } from "@/lib/utils";
+import { useEventBrowse } from "@/hooks/use-event-browse";
 
 const categories = [
   "All",
@@ -47,7 +45,6 @@ const locations = [
 
 function EventCard({ event }: { event: Event }) {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "");
-
   return (
     <Link href={`/events/${event.slug}`} className="block group">
       <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col bg-card">
@@ -95,47 +92,21 @@ function EventCard({ event }: { event: Event }) {
 }
 
 export default function HomePage() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedLocation, setSelectedLocation] = useState("All");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      setLoading(true);
-      setError(null);
-      const params: { [key: string]: string } = {};
-      if (debouncedSearchTerm) params.search = debouncedSearchTerm;
-      if (selectedCategory !== "All") params.category = selectedCategory;
-      if (selectedLocation !== "All") params.location = selectedLocation;
-      if (startDate) params.startDate = startDate;
-      if (endDate) params.endDate = endDate;
-
-      try {
-        const response = await getEvents(params);
-        setEvents(response.data);
-      } catch (err) {
-        setError("Tidak dapat memuat event saat ini. Coba lagi nanti.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
-  }, [
-    debouncedSearchTerm,
+  const {
+    events,
+    loading,
+    error,
+    searchTerm,
     selectedCategory,
     selectedLocation,
     startDate,
     endDate,
-  ]);
+    setSearchTerm,
+    setSelectedCategory,
+    setSelectedLocation,
+    setStartDate,
+    setEndDate,
+  } = useEventBrowse();
 
   return (
     <div className="bg-background">

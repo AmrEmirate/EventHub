@@ -1,147 +1,32 @@
 import axios from "axios";
+import {
+  SimpleMessageResponse,
+  UserProfile,
+  LoginResponse,
+  Event,
+  EventWithReviews,
+  PointPrize,
+  Voucher,
+  Transaction,
+  OrganizerDashboardData,
+  OrganizerTransaction,
+  Attendee,
+  Notification,
+} from "./types";
 
-interface SimpleMessageResponse {
-  message: string;
-}
-
-export interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  points: number;
-  referralCode: string | null;
-  phone: string | null;
-  profile: {
-    bio: string | null;
-    avatarUrl: string | null;
-  } | null;
-  role: "CUSTOMER" | "ORGANIZER";
-}
-
-interface LoginResponse {
-  token: string;
-  user: UserProfile;
-}
-
-export interface Event {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  isFree: boolean;
-  startDate: string;
-  endDate: string;
-  location: string;
-  category: string;
-  ticketTotal: number;
-  ticketSold: number;
-  imageUrl?: string | null;
-}
-
-export interface Review {
-  id: string;
-  rating: number;
-  comment?: string;
-  imageUrl?: string | null;
-  user: {
-    name: string;
-    profile?: {
-      avatarUrl: string | null;
-    } | null;
-  };
-  createdAt: string;
-}
-
-export interface EventWithReviews extends Event {
-  reviews: Review[];
-  organizer?: {
-    name: string;
-    profile?: {
-      avatarUrl: string | null;
-    } | null;
-  };
-}
-
-export interface PointPrize {
-  id: string;
-  name: string;
-  description: string;
-  pointsRequired: number;
-}
-
-export interface Voucher {
-  id: string;
-  code: string;
-  discountPercent: number;
-  expiresAt: string;
-  maxDiscount?: number | null;
-  event?: {
-    name: string;
-  } | null;
-}
-
-export interface Transaction {
-  id: string;
-  status:
-    | "PENDING_PAYMENT"
-    | "COMPLETED"
-    | "CANCELLED"
-    | "EXPIRED"
-    | "REJECTED"
-    | "PENDING_CONFIRMATION";
-  totalPrice: number;
-  finalPrice: number;
-  createdAt: string;
-  paymentDeadline: string;
-  paymentProofUrl?: string | null;
-  event: {
-    id: string;
-    name: string;
-    slug: string;
-    startDate: string;
-    location?: string;
-  };
-  user: {
-    name: string;
-    email: string;
-  };
-}
-
-export interface OrganizerDashboardData {
-  stats: {
-    revenue: number;
-    ticketsSold: number;
-    totalEvents: number;
-  };
-  analytics: {
-    revenuePerDay: { date: string; total: number }[];
-    ticketsPerEvent: { eventName: string; sold: number }[];
-  };
-}
-
-export interface OrganizerTransaction extends Transaction {
-  user: {
-    name: string;
-    email: string;
-  };
-}
-
-export interface Attendee {
-  user: {
-    name: string;
-    email: string;
-  };
-  quantity: number;
-  createdAt: string;
-}
-
-export interface Notification {
-  id: string;
-  message: string;
-  isRead: boolean;
-  createdAt: string;
-}
+export type {
+  UserProfile,
+  Event,
+  Review,
+  EventWithReviews,
+  PointPrize,
+  Voucher,
+  Transaction,
+  OrganizerDashboardData,
+  OrganizerTransaction,
+  Attendee,
+  Notification,
+} from "./types";
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -200,9 +85,7 @@ export const changePassword = (data: any) =>
   api.put<SimpleMessageResponse>("/users/me/change-password", data);
 export const updateMyAvatar = (avatarData: FormData) => {
   return api.put("/users/me/avatar", avatarData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 };
 
@@ -216,9 +99,7 @@ export const getMyOrganizerEvents = () =>
   api.get<Event[]>("/events/organizer/my-events");
 export const createEvent = (data: FormData) => {
   return api.post("/events", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 };
 export const updateEvent = (eventId: string, data: any) =>
@@ -243,9 +124,7 @@ export const getTransactionById = (transactionId: string) =>
 
 export const createReview = (data: FormData) => {
   return api.post("/reviews", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 };
 export const getEventReviews = (eventId: string) =>
@@ -276,12 +155,13 @@ export const uploadPaymentProof = (
   proofData: FormData
 ) => {
   return api.post(`/transactions/${transactionId}/upload`, proofData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    headers: { "Content-Type": "multipart/form-data" },
   });
 };
 
 export const getPointPrizes = () => api.get<PointPrize[]>("/rewards/prizes");
 export const redeemPointPrize = (prizeId: string) =>
   api.post(`/rewards/redeem/${prizeId}`);
+
+export const cancelTransaction = (transactionId: string) =>
+  api.post(`/transactions/${transactionId}/cancel`);

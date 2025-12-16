@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,82 +10,32 @@ import {
   ArrowLeft,
   Loader2,
   Ticket,
-  Star,
   MessageSquare,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  getEventBySlug,
-  getMyTransactions,
-  EventWithReviews,
-  Transaction,
-} from "@/lib/apihelper";
 import { formatPrice, formatDate } from "@/lib/utils";
 import { ReviewForm } from "@/components/reviews/review-form";
-import { useAuth } from "@/context/AuthContext";
+import { ReviewCard } from "@/components/reviews/ReviewCard";
+import { useEventDetail } from "@/hooks/use-event-detail";
 
 export default function EventDetailPage() {
-  const [event, setEvent] = useState<EventWithReviews | null>(null);
-  const [userTransactions, setUserTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const { user, isAuthenticated } = useAuth();
   const params = useParams();
   const router = useRouter();
   const { slug } = params;
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "");
 
-  const fetchData = async () => {
-    if (typeof slug !== "string") {
-      setError("URL event tidak valid.");
-      setLoading(false);
-      return;
-    }
-    try {
-      setLoading(true);
-      setError(null);
+  const { event, loading, error, canReview, hasReviewed, refetch } =
+    useEventDetail(slug as string);
 
-      const eventRes = await getEventBySlug(slug);
-      setEvent(eventRes.data);
-
-      if (isAuthenticated) {
-        const transactionRes = await getMyTransactions();
-        setUserTransactions(transactionRes.data);
-      }
-    } catch (err) {
-      setError("Event yang Anda cari tidak dapat ditemukan.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [slug, isAuthenticated]);
-
-  const canReview =
-    isAuthenticated &&
-    event &&
-    userTransactions.some(
-      (trx) => trx.event.id === event.id && trx.status === "COMPLETED"
-    );
-
-  const hasReviewed = event?.reviews.some(
-    (review) => review.user.name === user?.name
-  );
-
-  if (loading) {
+  if (loading)
     return (
       <div className="flex h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
-  }
 
   if (error || !event) {
     return (
@@ -169,66 +118,18 @@ export default function EventDetailPage() {
                       <p className="text-muted-foreground mb-4">
                         Bagikan pengalaman Anda di event ini!
                       </p>
-                      <ReviewForm
-                        eventId={event.id}
-                        onReviewSubmit={fetchData}
-                      />
+                      <ReviewForm eventId={event.id} onReviewSubmit={refetch} />
                       <Separator className="my-6" />
                     </>
                   )}
-
                   {event.reviews && event.reviews.length > 0 ? (
                     <div className="space-y-6">
                       {event.reviews.map((review) => (
-                        <div
+                        <ReviewCard
                           key={review.id}
-                          className="flex items-start gap-4 border-b pb-4 last:border-b-0 last:pb-0"
-                        >
-                          <Avatar>
-                            <AvatarImage
-                              src={
-                                review.user.profile?.avatarUrl
-                                  ? `${API_BASE_URL}${review.user.profile.avatarUrl}`
-                                  : undefined
-                              }
-                            />
-                            <AvatarFallback>
-                              {review.user.name.charAt(0)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="w-full">
-                            <p className="font-semibold">{review.user.name}</p>
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${
-                                    i < review.rating
-                                      ? "text-yellow-400 fill-yellow-400"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-
-                            {/* [PERBAIKAN] Ubah ukuran gambar di sini */}
-                            {review.imageUrl && (
-                              <div className="mt-3 relative w-full md:w-1/2 h-48 rounded-lg overflow-hidden">
-                                <Image
-                                  src={`${API_BASE_URL}${review.imageUrl}`}
-                                  alt={`Ulasan dari ${review.user.name}`}
-                                  fill
-                                  className="object-cover"
-                                  sizes="(max-width: 768px) 100vw, 500px"
-                                />
-                              </div>
-                            )}
-
-                            <p className="text-sm text-muted-foreground mt-2">
-                              {review.comment}
-                            </p>
-                          </div>
-                        </div>
+                          review={review}
+                          apiBaseUrl={API_BASE_URL}
+                        />
                       ))}
                     </div>
                   ) : (

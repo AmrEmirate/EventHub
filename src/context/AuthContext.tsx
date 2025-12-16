@@ -25,6 +25,7 @@ interface AuthContextType {
   fetchUser: () => Promise<void>;
   notifications: Notification[];
   fetchNotifications: () => Promise<void>;
+  setTokenAndFetchUser: (token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -95,6 +96,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/auth/login");
   };
 
+  const setTokenAndFetchUser = async (token: string) => {
+    localStorage.setItem("authToken", token);
+    await fetchUser();
+    await fetchNotifications();
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
@@ -102,8 +109,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logout,
     loading,
     fetchUser,
-    notifications, // <-- Ekspos state notifikasi
-    fetchNotifications, // <-- Ekspos fungsi fetch notifikasi
+    notifications,
+    fetchNotifications,
+    setTokenAndFetchUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
