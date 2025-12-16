@@ -86,7 +86,7 @@ export default function Header() {
 
   const getInitials = (name: string = "") =>
     name ? name.charAt(0).toUpperCase() : "?";
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "");
 
   return (
     <header className="border-b bg-background sticky top-0 z-50">

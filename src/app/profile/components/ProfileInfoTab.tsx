@@ -99,7 +99,7 @@ export default function ProfileInfoTab({ user }: { user: UserProfile }) {
     fileInputRef.current?.click();
   };
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "");
   const avatarSrc = user.profile?.avatarUrl
     ? `${API_BASE_URL}${user.profile.avatarUrl}`
     : "";

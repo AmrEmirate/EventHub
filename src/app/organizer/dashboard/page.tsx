@@ -115,7 +115,7 @@ export default function OrganizerDashboard() {
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const router = useRouter();
   const [currentDate, setCurrentDate] = useState(new Date());
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "");
 
   const fetchData = async () => {
     setLoading(true);

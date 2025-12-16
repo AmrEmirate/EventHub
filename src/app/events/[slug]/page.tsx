@@ -39,7 +39,7 @@ export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { slug } = params;
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "");
 
   const fetchData = async () => {
     if (typeof slug !== "string") {
