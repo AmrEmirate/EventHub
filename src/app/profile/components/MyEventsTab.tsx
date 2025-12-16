@@ -33,7 +33,6 @@ export default function MyEventsTab() {
       const res = await getMyTransactions();
       setTransactions(res.data);
     } catch (error) {
-      // Silent fail - toast handled at UI level
     } finally {
       setLoading(false);
     }
@@ -51,7 +50,6 @@ export default function MyEventsTab() {
   const handleReviewSubmitted = () => {
     setIsReviewModalOpen(false);
     setSelectedTransaction(null);
-    // Optional: Anda bisa refresh data transaksi jika ingin menyembunyikan tombol setelah review
   };
 
   if (loading)
