@@ -31,7 +31,6 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { createEvent } from "../../../lib/apihelper";
 
-// Daftar kategori yang bisa dipilih
 const categories = [
   "Technology",
   "Music",
@@ -60,13 +59,11 @@ export default function CreateEventPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Handler untuk semua perubahan input
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target;
 
-    // Khusus untuk checkbox
     if (type === "checkbox") {
       const isChecked = (e.target as HTMLInputElement).checked;
       setFormData((prev) => ({
@@ -79,34 +76,28 @@ export default function CreateEventPage() {
     }
   };
 
-  // Handler untuk komponen Select
   const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handler baru untuk input file gambar
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setImageFile(e.target.files[0]);
     }
   };
 
-  // Fungsi untuk mengirim data ke backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      // Menggunakan FormData untuk mengirim data termasuk file
       const data = new FormData();
 
-      // Append semua data dari state formData ke FormData object
       Object.entries(formData).forEach(([key, value]) => {
         data.append(key, String(value));
       });
 
-      // Append file gambar jika ada
       if (imageFile) {
         data.append("imageUrl", imageFile); // Nama field 'imageUrl' harus cocok dengan di backend
       }

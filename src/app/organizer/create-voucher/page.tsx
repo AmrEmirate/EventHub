@@ -31,7 +31,6 @@ import {
 } from "../../../lib/apihelper";
 import { toast } from "sonner";
 
-// Skema validasi untuk form voucher
 const voucherSchema = z.object({
   eventId: z.string().uuid("Anda harus memilih event"),
   code: z
@@ -71,7 +70,6 @@ export default function CreateVoucherPage() {
     },
   });
 
-  // Ambil daftar event milik organizer
   useEffect(() => {
     const fetchEvents = async () => {
       try {

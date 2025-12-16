@@ -29,7 +29,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-// [PERBAIKAN] Impor `getEventById` dan `updateEvent`
 import { getEventById, updateEvent } from "../../../../lib/apihelper";
 
 const categories = [
@@ -70,7 +69,6 @@ export default function EditEventPage() {
     const fetchEventData = async () => {
       setLoading(true);
       try {
-        // [PERBAIKAN] Gunakan getEventById
         const response = await getEventById(eventId as string);
         const event = response.data;
 
