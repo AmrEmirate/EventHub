@@ -53,7 +53,14 @@ function EventCard({ event }: { event: Event }) {
             <Image
               src={
                 event.imageUrl
-                  ? `${API_BASE_URL}${event.imageUrl}`
+                  ? event.imageUrl.startsWith("http")
+                    ? event.imageUrl
+                    : `${
+                        process.env.NEXT_PUBLIC_API_URL?.replace(
+                          "/api/v1",
+                          ""
+                        ) || ""
+                      }${event.imageUrl}`
                   : `https://picsum.photos/seed/${event.id}/400/300`
               }
               alt={event.name}

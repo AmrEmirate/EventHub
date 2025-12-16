@@ -58,7 +58,12 @@ export default function EventDetailPage() {
           <Image
             src={
               event.imageUrl
-                ? `${API_BASE_URL}${event.imageUrl}`
+                ? event.imageUrl.startsWith("http")
+                  ? event.imageUrl
+                  : `${
+                      process.env.NEXT_PUBLIC_API_URL?.replace("/api/v1", "") ||
+                      ""
+                    }${event.imageUrl}`
                 : "https://placehold.co/1200x400/e2e8f0/64748b?text=Event+Image"
             }
             alt={event.name}
