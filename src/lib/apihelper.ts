@@ -1,7 +1,5 @@
 import axios from "axios";
 
-// --- Definisi Tipe Data (Interface) ---
-
 interface SimpleMessageResponse {
   message: string;
 }
@@ -145,7 +143,6 @@ export interface Notification {
   createdAt: string;
 }
 
-// --- Konfigurasi Instance Axios ---
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
   headers: {
@@ -182,9 +179,6 @@ api.interceptors.response.use(
   }
 );
 
-// --- Kumpulan Fungsi API ---
-
-// Auth
 export const login = (data: any) =>
   api.post<LoginResponse>("/auth/login", data);
 export const register = (data: any) =>
@@ -196,7 +190,6 @@ export const forgotPassword = (email: string) =>
 export const resetPassword = (data: { token: string; newPassword: string }) =>
   api.post<SimpleMessageResponse>("/auth/reset-password", data);
 
-// User Profile
 export const getMyProfile = () => api.get<UserProfile>("/users/me");
 export const updateMyProfile = (data: {
   name?: string;
@@ -213,7 +206,6 @@ export const updateMyAvatar = (avatarData: FormData) => {
   });
 };
 
-// Events
 export const getEvents = (params?: any) =>
   api.get<Event[]>("/events", { params });
 export const getEventBySlug = (slug: string) =>
@@ -234,12 +226,10 @@ export const updateEvent = (eventId: string, data: any) =>
 export const deleteEvent = (eventId: string) =>
   api.delete(`/events/${eventId}`);
 
-// Vouchers
 export const getMyVouchers = () => api.get<Voucher[]>("/vouchers/me");
 export const createOrganizerVoucher = (data: any) =>
   api.post("/vouchers/organizer", data);
 
-// Transactions
 export const getMyTransactions = () =>
   api.get<Transaction[]>("/transactions/me");
 export const createTransaction = (data: {
@@ -251,7 +241,6 @@ export const createTransaction = (data: {
 export const getTransactionById = (transactionId: string) =>
   api.get<Transaction>(`/transactions/${transactionId}`);
 
-// Reviews
 export const createReview = (data: FormData) => {
   return api.post("/reviews", data, {
     headers: {
@@ -262,13 +251,11 @@ export const createReview = (data: FormData) => {
 export const getEventReviews = (eventId: string) =>
   api.get(`/reviews/${eventId}`);
 
-// Notifications
 export const getMyNotifications = () =>
   api.get<Notification[]>("/notifications/me");
 export const markNotificationsAsRead = () =>
   api.post("/notifications/me/mark-as-read");
 
-// --- Fungsi untuk Organizer ---
 export const getOrganizerTransactions = () =>
   api.get<OrganizerTransaction[]>("/transactions/organizer");
 export const approveTransaction = (transactionId: string) =>
@@ -278,15 +265,12 @@ export const rejectTransaction = (transactionId: string) =>
 export const getEventAttendees = (eventId: string) =>
   api.get<Attendee[]>(`/events/${eventId}/attendees`);
 
-// Dashboard
-// [PERBAIKAN] Tambahkan parameter month dan year untuk filter
 export const getOrganizerDashboard = (month: number, year: number) => {
   return api.get<OrganizerDashboardData>("/dashboard", {
     params: { month, year },
   });
 };
 
-// File Upload
 export const uploadPaymentProof = (
   transactionId: string,
   proofData: FormData
@@ -298,7 +282,6 @@ export const uploadPaymentProof = (
   });
 };
 
-// Point Prizes (Rewards)
 export const getPointPrizes = () => api.get<PointPrize[]>("/rewards/prizes");
 export const redeemPointPrize = (prizeId: string) =>
   api.post(`/rewards/redeem/${prizeId}`);

@@ -1,5 +1,3 @@
-// frontend/app/checkout/[slug]/page.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -47,14 +45,12 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { slug } = params;
 
-  // Mengambil semua data yang diperlukan (event, profil, voucher)
   useEffect(() => {
     if (typeof slug !== "string") return;
 
     const fetchCheckoutData = async () => {
       setLoading(true);
       try {
-        // Ambil data secara paralel untuk efisiensi
         const [eventRes, profileRes, vouchersRes] = await Promise.all([
           getEventBySlug(slug),
           getMyProfile(),
@@ -100,7 +96,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // Kalkulasi harga
   let subtotal = event?.price ? event.price * quantity : 0;
   let finalPrice = subtotal;
   let pointsUsed = 0;

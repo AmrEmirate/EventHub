@@ -5,46 +5,48 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-
-// Impor semua komponen tab yang sudah dibuat
-import ProfileInfoTab from './components/ProfileInfoTab';
-import PointsTab from './components/PointsTab';
-import CouponsTab from './components/CouponsTab';
-import MyEventsTab from './components/MyEventsTab';
-import SecurityTab from './components/SecurityTab';
+import ProfileInfoTab from "./components/ProfileInfoTab";
+import PointsTab from "./components/PointsTab";
+import CouponsTab from "./components/CouponsTab";
+import MyEventsTab from "./components/MyEventsTab";
+import SecurityTab from "./components/SecurityTab";
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
 
   if (authLoading) {
-      return (
-        <div className="flex flex-col justify-center items-center min-h-screen">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="mt-4 text-muted-foreground">Memuat data pengguna...</p>
-        </div>
-      );
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="mt-4 text-muted-foreground">Memuat data pengguna...</p>
+      </div>
+    );
   }
-  
+
   if (!user) {
-      return (
-        <div className="flex flex-col justify-center items-center min-h-screen gap-4">
-            <p className="text-lg">Anda harus login untuk mengakses halaman ini.</p>
-            <Button asChild>
-                <Link href="/auth/login">Ke Halaman Login</Link>
-            </Button>
-        </div>
-      );
+    return (
+      <div className="flex flex-col justify-center items-center min-h-screen gap-4">
+        <p className="text-lg">Anda harus login untuk mengakses halaman ini.</p>
+        <Button asChild>
+          <Link href="/auth/login">Ke Halaman Login</Link>
+        </Button>
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="mb-6 flex justify-between items-center">
         <div>
-            <h1 className="text-3xl font-bold">Profil Saya</h1>
-            <p className="text-muted-foreground">Kelola pengaturan dan preferensi akun Anda.</p>
+          <h1 className="text-3xl font-bold">Profil Saya</h1>
+          <p className="text-muted-foreground">
+            Kelola pengaturan dan preferensi akun Anda.
+          </p>
         </div>
         <Button variant="outline" asChild>
-            <Link href="/"><ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Home</Link>
+          <Link href="/">
+            <ArrowLeft className="h-4 w-4 mr-2" /> Kembali ke Home
+          </Link>
         </Button>
       </div>
 

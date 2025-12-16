@@ -32,7 +32,6 @@ import {
 import { markNotificationsAsRead } from "@/lib/apihelper";
 import { toast } from "sonner";
 
-// Komponen untuk satu item notifikasi
 function NotificationItem({
   message,
   isRead,
@@ -67,7 +66,6 @@ function NotificationItem({
   );
 }
 
-// Komponen Header Utama
 export default function Header() {
   const { user, logout, loading, notifications, fetchNotifications } =
     useAuth();
@@ -104,7 +102,6 @@ export default function Header() {
             <div className="h-10 w-24 bg-gray-200 rounded animate-pulse"></div>
           ) : user ? (
             <>
-              {/* [BARU] Tombol dan Panel Notifikasi */}
               <Sheet open={isNotifOpen} onOpenChange={setIsNotifOpen}>
                 <SheetTrigger asChild>
                   <Button variant="ghost" size="icon" className="relative">
@@ -146,7 +143,6 @@ export default function Header() {
                 </SheetContent>
               </Sheet>
 
-              {/* Menu Dropdown Profil (tidak berubah) */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button

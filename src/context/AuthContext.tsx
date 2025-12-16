@@ -16,7 +16,6 @@ import {
   Notification,
 } from "@/lib/apihelper";
 
-// Definisikan tipe untuk context
 interface AuthContextType {
   user: UserProfile | null;
   isAuthenticated: boolean;
@@ -24,7 +23,6 @@ interface AuthContextType {
   logout: () => void;
   loading: boolean;
   fetchUser: () => Promise<void>;
-  // [BARU] Tambahkan state dan fungsi untuk notifikasi
   notifications: Notification[];
   fetchNotifications: () => Promise<void>;
 }
@@ -34,7 +32,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  // [BARU] State untuk notifikasi
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const router = useRouter();
 
@@ -51,32 +48,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // [BARU] Fungsi untuk mengambil notifikasi
   const fetchNotifications = async () => {
     if (!localStorage.getItem("authToken")) return;
     try {
       const res = await getMyNotifications();
       setNotifications(res.data);
-    } catch (error) {
-      // Silent fail
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
     const checkUserSession = async () => {
       await fetchUser();
-      await fetchNotifications(); // Ambil notifikasi saat user pertama kali login
+      await fetchNotifications();
       setLoading(false);
     };
 
     checkUserSession();
 
-    // Set interval untuk memeriksa notifikasi baru setiap 1 menit
     const interval = setInterval(() => {
       fetchNotifications();
-    }, 60000); // 60 detik
+    }, 60000);
 
-    return () => clearInterval(interval); // Hapus interval saat komponen di-unmount
+    return () => clearInterval(interval);
   }, []);
 
   const login = async (credentials: any) => {
