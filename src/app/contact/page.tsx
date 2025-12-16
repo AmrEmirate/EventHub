@@ -1,17 +1,38 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { Mail, Phone, MapPin, Clock, Send, MessageCircle, HelpCircle, CalendarDays } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MobileNav } from "@/components/mobile-nav"
+import { useState } from "react";
+import Link from "next/link";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Send,
+  MessageCircle,
+  HelpCircle,
+  CalendarDays,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MobileNav } from "@/components/mobile-nav";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -20,13 +41,11 @@ export default function ContactPage() {
     subject: "",
     category: "",
     message: "",
-  })
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Handle form submission
-    console.log("Contact form submitted:", formData)
-    alert("Thank you for your message! We'll get back to you soon.")
+    e.preventDefault();
+    alert("Thank you for your message! We'll get back to you soon.");
 
     // Reset form
     setFormData({
@@ -35,12 +54,12 @@ export default function ContactPage() {
       subject: "",
       category: "",
       message: "",
-    })
-  }
+    });
+  };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const contactInfo = [
     {
@@ -71,7 +90,7 @@ export default function ContactPage() {
       value: "Mon-Fri: 9AM-6PM WIB",
       action: "#",
     },
-  ]
+  ];
 
   const faqItems = [
     {
@@ -94,7 +113,7 @@ export default function ContactPage() {
       answer:
         "During checkout, you can apply coupon codes and choose to use your points for discounts. Points and coupons will be automatically applied.",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -102,15 +121,24 @@ export default function ContactPage() {
       <header className="border-b bg-white sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2 text-2xl font-bold text-primary">
+            <Link
+              href="/"
+              className="flex items-center space-x-2 text-2xl font-bold text-primary"
+            >
               <CalendarDays className="h-8 w-8" />
               <span>EventHub</span>
             </Link>
             <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/" className="text-muted-foreground hover:text-primary">
+              <Link
+                href="/"
+                className="text-muted-foreground hover:text-primary"
+              >
                 Browse Events
               </Link>
-              <Link href="/about" className="text-muted-foreground hover:text-primary">
+              <Link
+                href="/about"
+                className="text-muted-foreground hover:text-primary"
+              >
                 About
               </Link>
               <Link href="/contact" className="text-primary font-medium">
@@ -135,9 +163,12 @@ export default function ContactPage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary to-primary/80 text-white py-12 md:py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold mb-4 md:mb-6">Contact Us</h1>
+          <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold mb-4 md:mb-6">
+            Contact Us
+          </h1>
           <p className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 opacity-90 max-w-3xl mx-auto">
-            Have questions? We're here to help! Reach out to our friendly support team
+            Have questions? We're here to help! Reach out to our friendly
+            support team
           </p>
         </div>
       </section>
@@ -147,25 +178,37 @@ export default function ContactPage() {
           {/* Contact Info Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12 md:mb-16">
             {contactInfo.map((info, index) => {
-              const Icon = info.icon
+              const Icon = info.icon;
               return (
-                <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <Card
+                  key={index}
+                  className="text-center hover:shadow-lg transition-shadow"
+                >
                   <CardContent className="pt-6">
                     <div className="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-primary/10 rounded-full mb-3 md:mb-4">
                       <Icon className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold text-base md:text-lg mb-2">{info.title}</h3>
-                    <p className="text-xs md:text-sm text-muted-foreground mb-3">{info.description}</p>
+                    <h3 className="font-semibold text-base md:text-lg mb-2">
+                      {info.title}
+                    </h3>
+                    <p className="text-xs md:text-sm text-muted-foreground mb-3">
+                      {info.description}
+                    </p>
                     {info.action !== "#" ? (
-                      <a href={info.action} className="text-primary hover:underline font-medium text-sm md:text-base">
+                      <a
+                        href={info.action}
+                        className="text-primary hover:underline font-medium text-sm md:text-base"
+                      >
                         {info.value}
                       </a>
                     ) : (
-                      <p className="font-medium text-sm md:text-base">{info.value}</p>
+                      <p className="font-medium text-sm md:text-base">
+                        {info.value}
+                      </p>
                     )}
                   </CardContent>
                 </Card>
-              )
+              );
             })}
           </div>
 
@@ -179,7 +222,8 @@ export default function ContactPage() {
                     Send us a Message
                   </CardTitle>
                   <CardDescription className="text-sm md:text-base">
-                    Fill out the form below and we'll get back to you as soon as possible
+                    Fill out the form below and we'll get back to you as soon as
+                    possible
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -193,7 +237,9 @@ export default function ContactPage() {
                           id="name"
                           placeholder="Enter your full name"
                           value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("name", e.target.value)
+                          }
                           required
                           className="text-sm"
                         />
@@ -207,7 +253,9 @@ export default function ContactPage() {
                           type="email"
                           placeholder="Enter your email"
                           value={formData.email}
-                          onChange={(e) => handleInputChange("email", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("email", e.target.value)
+                          }
                           required
                           className="text-sm"
                         />
@@ -218,16 +266,31 @@ export default function ContactPage() {
                       <Label htmlFor="category" className="text-sm">
                         Category
                       </Label>
-                      <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
+                      <Select
+                        value={formData.category}
+                        onValueChange={(value) =>
+                          handleInputChange("category", value)
+                        }
+                      >
                         <SelectTrigger className="text-sm">
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="general">General Inquiry</SelectItem>
-                          <SelectItem value="technical">Technical Support</SelectItem>
-                          <SelectItem value="billing">Billing & Payments</SelectItem>
-                          <SelectItem value="event">Event Management</SelectItem>
-                          <SelectItem value="partnership">Partnership</SelectItem>
+                          <SelectItem value="general">
+                            General Inquiry
+                          </SelectItem>
+                          <SelectItem value="technical">
+                            Technical Support
+                          </SelectItem>
+                          <SelectItem value="billing">
+                            Billing & Payments
+                          </SelectItem>
+                          <SelectItem value="event">
+                            Event Management
+                          </SelectItem>
+                          <SelectItem value="partnership">
+                            Partnership
+                          </SelectItem>
                           <SelectItem value="feedback">Feedback</SelectItem>
                         </SelectContent>
                       </Select>
@@ -241,7 +304,9 @@ export default function ContactPage() {
                         id="subject"
                         placeholder="Brief description of your inquiry"
                         value={formData.subject}
-                        onChange={(e) => handleInputChange("subject", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("subject", e.target.value)
+                        }
                         required
                         className="text-sm"
                       />
@@ -255,7 +320,9 @@ export default function ContactPage() {
                         id="message"
                         placeholder="Please provide details about your inquiry..."
                         value={formData.message}
-                        onChange={(e) => handleInputChange("message", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("message", e.target.value)
+                        }
                         rows={6}
                         required
                         className="text-sm"
@@ -279,13 +346,19 @@ export default function ContactPage() {
                     <HelpCircle className="h-5 w-5 mr-2" />
                     Frequently Asked Questions
                   </CardTitle>
-                  <CardDescription className="text-sm md:text-base">Quick answers to common questions</CardDescription>
+                  <CardDescription className="text-sm md:text-base">
+                    Quick answers to common questions
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {faqItems.map((faq, index) => (
                     <div key={index} className="border-b pb-4 last:border-b-0">
-                      <h4 className="font-semibold mb-2 text-sm md:text-base">{faq.question}</h4>
-                      <p className="text-xs md:text-sm text-muted-foreground">{faq.answer}</p>
+                      <h4 className="font-semibold mb-2 text-sm md:text-base">
+                        {faq.question}
+                      </h4>
+                      <p className="text-xs md:text-sm text-muted-foreground">
+                        {faq.answer}
+                      </p>
                     </div>
                   ))}
                 </CardContent>
@@ -294,13 +367,19 @@ export default function ContactPage() {
               {/* Quick Links */}
               <Card className="mt-6">
                 <CardHeader>
-                  <CardTitle className="text-lg md:text-xl">Need Immediate Help?</CardTitle>
+                  <CardTitle className="text-lg md:text-xl">
+                    Need Immediate Help?
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <div>
-                      <p className="font-medium text-sm md:text-base">Help Center</p>
-                      <p className="text-xs md:text-sm text-muted-foreground">Browse our knowledge base</p>
+                      <p className="font-medium text-sm md:text-base">
+                        Help Center
+                      </p>
+                      <p className="text-xs md:text-sm text-muted-foreground">
+                        Browse our knowledge base
+                      </p>
                     </div>
                     <Button variant="outline" size="sm">
                       Visit
@@ -309,8 +388,12 @@ export default function ContactPage() {
 
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <div>
-                      <p className="font-medium text-sm md:text-base">Live Chat</p>
-                      <p className="text-xs md:text-sm text-muted-foreground">Chat with our support team</p>
+                      <p className="font-medium text-sm md:text-base">
+                        Live Chat
+                      </p>
+                      <p className="text-xs md:text-sm text-muted-foreground">
+                        Chat with our support team
+                      </p>
                     </div>
                     <Button variant="outline" size="sm">
                       Start Chat
@@ -319,8 +402,12 @@ export default function ContactPage() {
 
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <div>
-                      <p className="font-medium text-sm md:text-base">WhatsApp</p>
-                      <p className="text-xs md:text-sm text-muted-foreground">Message us on WhatsApp</p>
+                      <p className="font-medium text-sm md:text-base">
+                        WhatsApp
+                      </p>
+                      <p className="text-xs md:text-sm text-muted-foreground">
+                        Message us on WhatsApp
+                      </p>
                     </div>
                     <Button variant="outline" size="sm">
                       Message
@@ -333,11 +420,15 @@ export default function ContactPage() {
 
           {/* Office Locations */}
           <div className="mt-12 md:mt-16">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">Our Offices</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 md:mb-8">
+              Our Offices
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg md:text-xl">Jakarta (Headquarters)</CardTitle>
+                  <CardTitle className="text-lg md:text-xl">
+                    Jakarta (Headquarters)
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2 text-sm">
@@ -412,7 +503,8 @@ export default function ContactPage() {
             <div>
               <h3 className="text-lg font-semibold mb-4">EventHub</h3>
               <p className="text-muted-foreground text-sm">
-                Your premier destination for discovering and managing amazing events in Indonesia.
+                Your premier destination for discovering and managing amazing
+                events in Indonesia.
               </p>
             </div>
             <div>
@@ -464,5 +556,5 @@ export default function ContactPage() {
         </div>
       </footer>
     </div>
-  )
+  );
 }

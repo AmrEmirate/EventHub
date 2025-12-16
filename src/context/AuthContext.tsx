@@ -1,8 +1,20 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import { getMyProfile, login as apiLogin, UserProfile, getMyNotifications, Notification } from '@/lib/apihelper'; 
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
+import {
+  getMyProfile,
+  login as apiLogin,
+  UserProfile,
+  getMyNotifications,
+  Notification,
+} from "@/lib/apihelper";
 
 // Definisikan tipe untuk context
 interface AuthContextType {
@@ -27,28 +39,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   const fetchUser = async () => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     if (token) {
       try {
         const response = await getMyProfile();
         setUser(response.data);
       } catch (error) {
-        console.error("Sesi tidak valid, token dihapus.", error);
-        localStorage.removeItem('authToken');
+        localStorage.removeItem("authToken");
         setUser(null);
       }
     }
   };
-  
+
   // [BARU] Fungsi untuk mengambil notifikasi
   const fetchNotifications = async () => {
-      if (!localStorage.getItem('authToken')) return;
-      try {
-          const res = await getMyNotifications();
-          setNotifications(res.data);
-      } catch (error) {
-          console.error("Gagal mengambil notifikasi:", error);
-      }
+    if (!localStorage.getItem("authToken")) return;
+    try {
+      const res = await getMyNotifications();
+      setNotifications(res.data);
+    } catch (error) {
+      // Silent fail
+    }
   };
 
   useEffect(() => {
@@ -62,11 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Set interval untuk memeriksa notifikasi baru setiap 1 menit
     const interval = setInterval(() => {
-        fetchNotifications();
+      fetchNotifications();
     }, 60000); // 60 detik
 
     return () => clearInterval(interval); // Hapus interval saat komponen di-unmount
-
   }, []);
 
   const login = async (credentials: any) => {
@@ -74,46 +84,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await apiLogin(credentials);
       const { token, user: userData } = response.data;
-      localStorage.setItem('authToken', token);
+      localStorage.setItem("authToken", token);
       setUser(userData);
       await fetchNotifications(); // Ambil notifikasi setelah login berhasil
-      router.push('/'); 
+      router.push("/");
     } catch (error) {
-      throw error; 
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
     setUser(null);
     setNotifications([]); // Kosongkan notifikasi saat logout
-    router.push('/auth/login');
+    router.push("/auth/login");
   };
 
-  const value = { 
-    user, 
+  const value = {
+    user,
     isAuthenticated: !!user,
-    login, 
-    logout, 
+    login,
+    logout,
     loading,
     fetchUser,
     notifications, // <-- Ekspos state notifikasi
     fetchNotifications, // <-- Ekspos fungsi fetch notifikasi
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

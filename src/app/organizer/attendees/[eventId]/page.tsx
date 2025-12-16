@@ -7,8 +7,21 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Loader2, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getEventAttendees, Attendee } from "../../../../lib/apihelper";
 
 export default function AttendeesPage() {
@@ -27,7 +40,6 @@ export default function AttendeesPage() {
         const response = await getEventAttendees(eventId);
         setAttendees(response.data);
       } catch (err) {
-        console.error("Gagal mengambil data peserta:", err);
         setError("Tidak dapat memuat daftar peserta.");
       } finally {
         setLoading(false);
@@ -37,12 +49,16 @@ export default function AttendeesPage() {
     fetchAttendees();
   }, [eventId]);
 
-  const formatDate = (dateString: string) => new Date(dateString).toLocaleString("id-ID");
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleString("id-ID");
 
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6">
-        <Link href="/organizer/dashboard" className="inline-flex items-center text-sm text-muted-foreground hover:text-primary">
+        <Link
+          href="/organizer/dashboard"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary"
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Kembali ke Dashboard
         </Link>
@@ -54,12 +70,15 @@ export default function AttendeesPage() {
             Daftar Peserta Event
           </CardTitle>
           <CardDescription>
-            Berikut adalah daftar pengguna yang telah berhasil membeli tiket untuk event ini.
+            Berikut adalah daftar pengguna yang telah berhasil membeli tiket
+            untuk event ini.
           </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="text-center py-8"><Loader2 className="animate-spin h-8 w-8 mx-auto" /></div>
+            <div className="text-center py-8">
+              <Loader2 className="animate-spin h-8 w-8 mx-auto" />
+            </div>
           ) : error ? (
             <p className="text-center text-red-500 py-8">{error}</p>
           ) : (
@@ -76,14 +95,20 @@ export default function AttendeesPage() {
                 {attendees.length > 0 ? (
                   attendees.map((att, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">{att.user.name}</TableCell>
+                      <TableCell className="font-medium">
+                        {att.user.name}
+                      </TableCell>
                       <TableCell>{att.user.email}</TableCell>
                       <TableCell>{att.quantity}</TableCell>
                       <TableCell>{formatDate(att.createdAt)}</TableCell>
                     </TableRow>
                   ))
                 ) : (
-                  <TableRow><TableCell colSpan={4} className="text-center">Belum ada peserta untuk event ini.</TableCell></TableRow>
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                      Belum ada peserta untuk event ini.
+                    </TableCell>
+                  </TableRow>
                 )}
               </TableBody>
             </Table>
